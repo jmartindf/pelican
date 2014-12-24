@@ -20,6 +20,22 @@ from pelican import signals
 
 logger = logging.getLogger(__name__)
 
+class RssPuSHFeed(Rss201rev2Feed):
+    def add_root_elements(self, handler):
+        super(RssPuSHFeed,self).add_root_elements(handler)
+        if "hub" in self.feed and self.feed["hub"] != "":
+            handler.addQuickElement("link", None,
+                    {"rel": "self", "href": self.feed['feed_url'],"xmlns": "http://www.w3.org/2005/Atom"})
+            handler.addQuickElement("link", None,
+                    {"rel": "hub", "href": self.feed['hub'],"xmlns": "http://www.w3.org/2005/Atom"})
+
+class Atom1PuSHFeed(Atom1Feed):
+    def add_root_elements(self, handler):
+        super(Atom1PuSHFeed,self).add_root_elements(handler)
+        if "hub" in self.feed and self.feed["hub"] != "":
+            handler.addQuickElement("link", None,
+                    {"rel": "hub", "href": self.feed['hub']})
+
 
 class Writer(object):
 
@@ -31,13 +47,14 @@ class Writer(object):
         self._overridden_files = set()
 
     def _create_new_feed(self, feed_type, context):
-        feed_class = Rss201rev2Feed if feed_type == 'rss' else Atom1Feed
+        feed_class = RssPuSHFeed if feed_type == 'rss' else Atom1PuSHFeed
         sitename = Markup(context['SITENAME']).striptags()
         feed = feed_class(
             title=sitename,
             link=(self.site_url + '/'),
             feed_url=self.feed_url,
-            description=context.get('SITESUBTITLE', ''))
+            description=context.get('SITESUBTITLE', ''),
+            hub=context.get('PUBSUBHUB', ''))
         return feed
 
     def _add_item_to_the_feed(self, feed, item):
