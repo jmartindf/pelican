@@ -62,7 +62,7 @@ class Writer(object):
         title = Markup(item.title).striptags()
         link = '%s/%s' % (self.site_url, item.url)
         appendContent = ""
-        appentTitle = ""
+        appendTitle = ""
         if hasattr(item,"link"):
             appendContent = '<p><a href="%s">%s</a></p>' % (link, '&infin;')
             appentTitle = " &#8594;"
