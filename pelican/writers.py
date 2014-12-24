@@ -61,17 +61,19 @@ class Writer(object):
 
         title = Markup(item.title).striptags()
         link = '%s/%s' % (self.site_url, item.url)
-        append = ""
+        appendContent = ""
+        appentTitle = ""
         if hasattr(item,"link"):
-            append = '<p><a href="%s">%s</a></p>' % (link, '&infin;')
+            appendContent = '<p><a href="%s">%s</a></p>' % (link, '&infin;')
+            appentTitle = " &#8594;"
             link = item.link
         feed.add_item(
-            title=title,
+            title=title + appendTitle,
             link=link,
             unique_id='tag:%s,%s:%s' % (urlparse(link).netloc,
                                         item.date.date(),
                                         urlparse(link).path.lstrip('/')),
-            description=item.get_content(self.site_url) + append,
+            description=item.get_content(self.site_url) + appendContent,
             categories=item.tags if hasattr(item, 'tags') else None,
             author_name=getattr(item, 'author', ''),
             pubdate=set_date_tzinfo(
