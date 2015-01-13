@@ -46,7 +46,7 @@ class Writer(object):
         self._written_files = set()
         self._overridden_files = set()
 
-    def _create_new_feed(self, feed_type, context):
+    def _create_new_feed(self, feed_type, context, link_blog=False):
         feed_class = RssPuSHFeed if feed_type == 'rss' else Atom1PuSHFeed
         sitename = Markup(context['SITENAME']).striptags()
         feed = feed_class(
@@ -54,7 +54,8 @@ class Writer(object):
             link=(self.site_url + '/'),
             feed_url=self.feed_url,
             description=context.get('SITESUBTITLE', ''),
-            hub=context.get('PUBSUBHUB', ''))
+            hub=context.get('PUBSUBHUB', ''),
+            link_blog=link_blog)
         return feed
 
     def _add_item_to_the_feed(self, feed, item):
@@ -63,9 +64,9 @@ class Writer(object):
         link = '%s/%s' % (self.site_url, item.url)
         appendContent = ""
         appendTitle = ""
-        if hasattr(item,"link"):
+        if hasattr(item,"link") and feed.feed['link_blog']:
             appendContent = '<p><a href="%s">%s</a></p>' % (link, '&infin;')
-            appentTitle = " &#8594;"
+            appendTitle = " &#8594;"
             link = item.link
         feed.add_item(
             title=title + appendTitle,
@@ -103,7 +104,7 @@ class Writer(object):
         self._written_files.add(filename)
         return open(filename, 'w', encoding=encoding)
 
-    def write_feed(self, elements, context, path=None, feed_type='atom'):
+    def write_feed(self, elements, context, path=None, feed_type='atom', link_blog=False):
         """Generate a feed with the list of articles provided
 
         Return the feed. If no path or output_path is specified, just
@@ -123,7 +124,7 @@ class Writer(object):
         self.feed_domain = context.get('FEED_DOMAIN')
         self.feed_url = '{}/{}'.format(self.feed_domain, path)
 
-        feed = self._create_new_feed(feed_type, context)
+        feed = self._create_new_feed(feed_type, context, link_blog)
 
         max_items = len(elements)
         if self.settings['FEED_MAX_ITEMS']:

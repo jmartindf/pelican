@@ -271,6 +271,14 @@ class ArticlesGenerator(CachingGenerator):
         if self.settings.get('FEED_RSS'):
             writer.write_feed(self.articles, self.context,
                               self.settings['FEED_RSS'], feed_type='rss')
+        
+        if self.settings.get('LINK_FEED_ATOM'):
+            writer.write_feed(self.articles, self.context,
+                              self.settings['LINK_FEED_ATOM'],link_blog=True)
+
+        if self.settings.get('LINK_FEED_RSS'):
+            writer.write_feed(self.articles, self.context,
+                              self.settings['LINK_FEED_RSS'], feed_type='rss',link_blog=True)
 
         if (self.settings.get('FEED_ALL_ATOM')
                 or self.settings.get('FEED_ALL_RSS')):
