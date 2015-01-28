@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 from setuptools import setup
 
-requires = ['feedgenerator >= 1.6', 'jinja2 >= 2.7', 'pygments', 'docutils',
+requires = ['feedgenerator >= 1.5.dev', 'jinja2 >= 2.7', 'pygments', 'docutils',
             'pytz >= 0a', 'blinker', 'unidecode', 'six >= 1.4',
             'python-dateutil']
+links = [ 'git+ssh://git@github.com/jmartindf/feedgenerator-py3k.git#egg=feedgenerator-1.5.dev' ]
 
 entry_points = {
     'console_scripts': [
@@ -46,4 +47,5 @@ setup(
          'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     test_suite='pelican.tests',
+    dependency_links = links,
 )
