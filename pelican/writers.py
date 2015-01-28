@@ -77,7 +77,8 @@ class Writer(object):
             author_name=getattr(item, 'author', ''),
             pubdate=set_date_tzinfo(
                 item.modified if hasattr(item, 'modified') else item.date,
-                self.settings.get('TIMEZONE', None)))
+                self.settings.get('TIMEZONE', None)),
+            id_is_permalink=False)
 
     def _open_w(self, filename, encoding, override=False):
         """Open a file to write some content to it.
