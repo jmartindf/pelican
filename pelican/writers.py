@@ -24,10 +24,8 @@ class RssPuSHFeed(Rss201rev2Feed):
     def add_root_elements(self, handler):
         super(RssPuSHFeed,self).add_root_elements(handler)
         if "hub" in self.feed and self.feed["hub"] != "":
-            handler.addQuickElement("link", None,
-                    {"rel": "self", "href": self.feed['feed_url'],"xmlns": "http://www.w3.org/2005/Atom"})
-            handler.addQuickElement("link", None,
-                    {"rel": "hub", "href": self.feed['hub'],"xmlns": "http://www.w3.org/2005/Atom"})
+          handler.addQuickElement("atom:link", None,
+                    {"rel": "hub", "href": self.feed['hub']})
 
 class Atom1PuSHFeed(Atom1Feed):
     def add_root_elements(self, handler):
