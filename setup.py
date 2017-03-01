@@ -67,5 +67,4 @@ setup(
          'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     test_suite='pelican.tests',
-    dependency_links = links,
 )
