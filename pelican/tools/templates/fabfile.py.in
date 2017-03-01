@@ -3,8 +3,9 @@ import fabric.contrib.project as project
 import os
 import shutil
 import sys
-import SimpleHTTPServer
 import SocketServer
+
+from pelican.server import ComplexHTTPRequestHandler
 
 # Local path configuration (can be absolute or relative to fabfile)
 env.deploy_path = 'output'
@@ -20,7 +21,7 @@ env.cloudfiles_api_key = '$cloudfiles_api_key'
 env.cloudfiles_container = '$cloudfiles_container'
 
 # Github Pages configuration
-env.github_pages_branch = "gh-pages"
+env.github_pages_branch = "$github_pages_branch"
 
 # Port for `serve`
 PORT = 8000
@@ -36,9 +37,8 @@ def build():
     local('pelican -s pelicanconf.py')
 
 def rebuild():
-    """`clean` then `build`"""
-    clean()
-    build()
+    """`build` with the delete switch"""
+    local('pelican -d -s pelicanconf.py')
 
 def regenerate():
     """Automatically regenerate site upon file modification"""
@@ -51,7 +51,7 @@ def serve():
     class AddressReuseTCPServer(SocketServer.TCPServer):
         allow_reuse_address = True
 
-    server = AddressReuseTCPServer(('', PORT), SimpleHTTPServer.SimpleHTTPRequestHandler)
+    server = AddressReuseTCPServer(('', PORT), ComplexHTTPRequestHandler)
 
     sys.stderr.write('Serving on port {0} ...\n'.format(PORT))
     server.serve_forever()
@@ -89,5 +89,4 @@ def publish():
 def gh_pages():
     """Publish to GitHub Pages"""
     rebuild()
-    local("ghp-import -b {github_pages_branch} {deploy_path}".format(**env))
-    local("git push origin {github_pages_branch}".format(**env))
+    local("ghp-import -b {github_pages_branch} {deploy_path} -p".format(**env))
